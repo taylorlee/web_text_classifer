@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Training the Classifier</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>
+    $(document).ready(function(){
+        $("#predictSubmit").hide();
+        $("#instruction2").hide();
+        $("#instruction3").hide();
+        $("#classifierSubmit").click(function(){
+            $("#classifierSubmit").hide();
+            $("#instruction1").hide();
+            $("#instruction2").show();
+            $.post("/train",
+            { 
+                text : $("#formQuery").val()
+            },
+            function(){
+                $("#instruction2").hide();
+                $("#predictSubmit").show();
+                $("#instruction3").show();
+                $("#formQuery").val("This movie doesn't care about cleverness, wit or any other kind of intelligent humor.\nThose who find ugly meanings in beautiful things are corrupt without being charming.\nThere are slow and repetitive parts, but it has just enough spice to keep it interesting.I do not like it one bit.\nI hate this movie.\nWhy do I have to watch it?\nI really liked it.\nBeautiful and gorgeous.\nVery lovely.\nWorst movie ever.\nMy favorite film yet.\nSimplistic, silly, and tedious.");
+            });
+        });
+        $("#predictSubmit").click(function(){
+            $.post("predict",
+            {
+                text: $("#formQuery").val()
+            },
+            function(data){
+                alert("Predictions :\n" + data);
+            });
+        });
+    });
+    </script>
+</head>
+
+<body style="min-width: 1000px">
+	<div id="OuterCanvas">
+		<div id="InnerCanvas">
+			<div id="Page" style="width: 1100px">
+				<div class="header">
+				<div class="content">
+					<p id="instruction1" class="querybox">Please enter text dataset for training, or leave blank for default (movie-sentiments):</p>
+					<p id="instruction2" class="querybox">Please wait while the classifier trains.</p>
+					<p id="instruction3" class="querybox">The classifier is trained. Please enter test reviews or try the default:</p>
+					<p class="querybox">
+						<textarea name="formQuery" id="formQuery" style="width: 100%; height: 16em" rows="31" cols="7" maxlength="32768" tabindex="1"></textarea></p>
+					<table><tr>
+						<td><p class="description">
+						</p></td>
+							<button id="classifierSubmit" align="right" tabindex="2">Train Classifier</button>
+							<button id="predictSubmit" align="right" tabindex="2">Predict Input</button>
+					</tr></table>
+					<br /><br />
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
